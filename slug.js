@@ -10,9 +10,14 @@ function symbols(code) {
 }
 
 function slug(string, opts) {
+
     string = string.toString();
+
+  //如果选项是字符串，那么认为是 replacements 的符号
     if ('string' === typeof opts)
         opts = {replacement:opts};
+
+  //下面其实就是一个 opts 的 extend
     opts = opts || {};
     opts.mode = opts.mode || slug.defaults.mode;
     var defaults = slug.defaults.modes[opts.mode];
@@ -23,6 +28,8 @@ function slug(string, opts) {
     if ('undefined' === typeof opts.symbols)
         opts.symbols = defaults.symbols;
 
+  // 做一个 opts.multicharmap 的长度的数组
+  // 如果是用 trie 的话这里根本不需要的啦
     var lengths = [];
     for (var key in opts.multicharmap) {
         if (!opts.multicharmap.hasOwnProperty(key))
@@ -33,8 +40,11 @@ function slug(string, opts) {
             lengths.push(len);
     }
 
+  console.log('!', lengths);
+
     var code, unicode, result = "";
     for (var char, i = 0, l = string.length; i < l; i++) { char = string[i];
+      console.log('?', char, char.charCodeAt(0));
         if (!lengths.some(function (len) {
             var str = string.substr(i, len);
             if (opts.multicharmap[str]) {
@@ -54,18 +64,26 @@ function slug(string, opts) {
                 for(var j = 0, rl = removelist.length; j < rl; j++) {
                     char = char.replace(removelist[j], '');
                 }
+                //trim
                 char = char.replace(/^\s+|\s+$/g, '');
             }
         }
+      //去掉 不是单词，空白 - . _ ~ 的内容
         char = char.replace(/[^\w\s\-\.\_~]/g, ''); // allowed
+      //去掉选项的删除列表里面的东西
         if (opts.remove) char = char.replace(opts.remove, ''); // add flavour
         result += char;
     }
     result = result.trim();
+
+  //下面两行可以换成 [].join(opts.replacement)
     result = result.replace(/[-\s]+/g, opts.replacement); // convert spaces
     result = result.replace(opts.replacement+"$",''); // remove trailing separator
+
+  // 是不是全小写
     if (opts.lower)
       result = result.toLowerCase();
+  // 完事儿啦
     return result;
 };
 
