@@ -1,6 +1,6 @@
 'use strict';
 
-const trie = require('trie-prefix-tree');
+const trie = require('./trie');
 
 const defaultOptions = {
   replacement: '-',
@@ -20,8 +20,7 @@ const defaultOptions = {
 
 const slug = (content, opts=defaultOptions) => {
   let result = '';
-  //TODO: 需要自己实现一个更符合要求的 trie 现在这样又 stringify 又 parse 的太低效了
-  const multiCharTrie = JSON.parse(trie(Object.keys(opts.multicharmap)).dump());
+  const multiCharTrie = trie(Object.keys(opts.multicharmap));
 
   function trieMatch(trie, keyIndex) {
 
