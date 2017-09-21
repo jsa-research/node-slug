@@ -23,14 +23,14 @@ const slug = (content, opts=defaultOptions) => {
   const multiCharTrie = trie(Object.keys(opts.multicharmap));
 
   function trieMatch(trie, keyIndex) {
+    //console.log('>', content[keyIndex], '\n', trie);
 
     //FIXME: 下面这里需要再仔细想想
 
-    if (!trie || !trie[content[keyIndex]]) {
-      return keyIndex;
-    }
-
-    if (trie[content[keyIndex]].$ === 1) {
+    if (!trie ||
+      !trie[content[keyIndex]] ||
+      trie[content[keyIndex]].$ === 1
+    ) {
       return keyIndex;
     }
 

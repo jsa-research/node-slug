@@ -1,18 +1,13 @@
 'use strict';
 
-module.exports = array => array.reduce((trie, item ) => {
-  item
-    .toLowerCase()
-    .split('')
-    .reduce((subTrie, c, index, array) => {
-      subTrie[c] = subTrie[c] || {};
-      subTrie = subTrie[c];
-
-      if (index === array.length - 1) {
-        subTrie['$'] = 1;
-      }
-
-      return subTrie;
-    }, trie);
+module.exports = input => input.reduce((trie, item) => {
+  [...item].reduce((word, c, index, array) => {
+    word[c] = word[c] || {};
+    word = word[c];
+    if (index === array.length - 1) {
+      word.$ = 1;
+    }
+    return word;
+  }, trie);
   return trie;
 }, {});
